@@ -43,7 +43,7 @@ ifeq ($(call isTargetOsType, unix), true)
         LDFLAGS := $(LDFLAGS_JDKLIB) \
             $(call SET_SHARED_LIBRARY_ORIGIN), \
         LIBS_unix := -lnio -lnet -ljava -ljvm, \
-        LIBS_linux := -lpthread $(LIBDL), \
+        LIBS_linux := -pthread $(LIBDL), \
     ))
 
     TARGETS += $(BUILD_LIBSCTP)

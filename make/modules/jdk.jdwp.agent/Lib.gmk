@@ -36,7 +36,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBDT_SOCKET, \
         libjdwp/export, \
     LDFLAGS := $(LDFLAGS_JDKLIB) \
         $(call SET_SHARED_LIBRARY_ORIGIN), \
-    LIBS_linux := -lpthread, \
+    LIBS_linux := -pthread, \
     LIBS_windows := $(JDKLIB_LIBS) ws2_32.lib iphlpapi.lib, \
 ))
 
@@ -61,7 +61,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBJDWP, \
     LDFLAGS := $(LDFLAGS_JDKLIB) \
         $(call SET_SHARED_LIBRARY_ORIGIN), \
     LIBS := $(JDKLIB_LIBS), \
-    LIBS_linux := $(LIBDL), \
+    LIBS_linux := $(LIBDL) -liconv, \
     LIBS_macosx := -liconv, \
     LIBS_aix := -liconv, \
 ))

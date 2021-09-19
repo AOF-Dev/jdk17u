@@ -29,6 +29,10 @@
 #include <netdb.h>
 #include <poll.h>
 #include <sys/socket.h>
+#ifdef __ANDROID__
+#include <netinet/in.h>
+#include <netinet/in6.h>
+#endif
 
 /************************************************************************
  * Macros and constants

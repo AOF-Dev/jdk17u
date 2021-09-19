@@ -34,9 +34,9 @@
 #define ELF_DYN         Elf64_Dyn
 #define ELF_ADDR        Elf64_Addr
 #define ELF_AUXV        Elf64_auxv_t
-
+#ifndef __ANDROID__
 #define ELF_ST_TYPE     ELF64_ST_TYPE
-
+#endif
 #else
 
 #define ELF_EHDR        Elf32_Ehdr
@@ -47,9 +47,9 @@
 #define ELF_DYN         Elf32_Dyn
 #define ELF_ADDR        Elf32_Addr
 #define ELF_AUXV        Elf32_auxv_t
-
+#ifndef __ANDROID__
 #define ELF_ST_TYPE     ELF32_ST_TYPE
-
+#endif
 #endif
 
 

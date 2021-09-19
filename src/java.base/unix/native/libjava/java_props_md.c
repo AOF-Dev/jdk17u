@@ -90,6 +90,76 @@ mapLookup(char* map[], const char* key, char** value) {
 #define P_tmpdir "/var/tmp"
 #endif
 
+#if defined(__ANDROID__) && __ANDROID_API__ < 26
+static char* nl_langinfo(nl_item item) {
+  const char* result = "";
+  switch (item) {
+    case CODESET: result = (MB_CUR_MAX == 1) ? "ASCII" : "UTF-8"; break;
+
+    case D_T_FMT: result = "%F %T %z"; break;
+    case D_FMT: result = "%F"; break;
+    case T_FMT: result = "%T"; break;
+    case T_FMT_AMPM: result = "%I:%M:%S %p"; break;
+    case AM_STR: result = "AM"; break;
+    case PM_STR: result = "PM"; break;
+    case DAY_1: result = "Sunday"; break;
+    case DAY_2: result = "Monday"; break;
+    case DAY_3: result = "Tuesday"; break;
+    case DAY_4: result = "Wednesday"; break;
+    case DAY_5: result = "Thursday"; break;
+    case DAY_6: result = "Friday"; break;
+    case DAY_7: result = "Saturday"; break;
+    case ABDAY_1: result = "Sun"; break;
+    case ABDAY_2: result = "Mon"; break;
+    case ABDAY_3: result = "Tue"; break;
+    case ABDAY_4: result = "Wed"; break;
+    case ABDAY_5: result = "Thu"; break;
+    case ABDAY_6: result = "Fri"; break;
+    case ABDAY_7: result = "Sat"; break;
+    case MON_1: result = "January"; break;
+    case MON_2: result = "February"; break;
+    case MON_3: result = "March"; break;
+    case MON_4: result = "April"; break;
+    case MON_5: result = "May"; break;
+    case MON_6: result = "June"; break;
+    case MON_7: result = "July"; break;
+    case MON_8: result = "August"; break;
+    case MON_9: result = "September"; break;
+    case MON_10: result = "October"; break;
+    case MON_11: result = "November"; break;
+    case MON_12: result = "December"; break;
+    case ABMON_1: result = "Jan"; break;
+    case ABMON_2: result = "Feb"; break;
+    case ABMON_3: result = "Mar"; break;
+    case ABMON_4: result = "Apr"; break;
+    case ABMON_5: result = "May"; break;
+    case ABMON_6: result = "Jun"; break;
+    case ABMON_7: result = "Jul"; break;
+    case ABMON_8: result = "Aug"; break;
+    case ABMON_9: result = "Sep"; break;
+    case ABMON_10: result = "Oct"; break;
+    case ABMON_11: result = "Nov"; break;
+    case ABMON_12: result = "Dec"; break;
+    case ERA: result = ""; break;
+    case ERA_D_FMT: result = ""; break;
+    case ERA_D_T_FMT: result = ""; break;
+    case ERA_T_FMT: result = ""; break;
+    case ALT_DIGITS: result = ""; break;
+
+    case RADIXCHAR: result = "."; break;
+    case THOUSEP: result = ""; break;
+
+    case YESEXPR: result = "^[yY]"; break;
+    case NOEXPR: result = "^[nN]"; break;
+
+    case CRNCYSTR: result = ""; break;
+
+    default: break;
+  }
+  return (char*)result;
+}
+#endif
+
 static int ParseLocale(JNIEnv* env, int cat, char ** std_language, char ** std_script,
                        char ** std_country, char ** std_variant, char ** std_encoding) {
     char *temp = NULL;

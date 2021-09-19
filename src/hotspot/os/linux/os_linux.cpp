@@ -512,6 +512,53 @@ extern "C" void breakpoint() {
   // use debugger to set breakpoint here
 }
 
+#ifdef __ANDROID__
+// Copy from glibc 2.31
+
+# ifndef _CS_GNU_LIBC_VERSION
+# define _CS_GNU_LIBC_VERSION 2
+# endif
+# ifndef _CS_GNU_LIBPTHREAD_VERSION
+# define _CS_GNU_LIBPTHREAD_VERSION 3
+# endif
+
+static size_t confstr(int name, char *buf, size_t len) {
+  const char *string = "";
+  size_t string_len = 1;
+
+  switch (name) {
+    case _CS_GNU_LIBC_VERSION:
+      string = "bionic libc android-21";
+      string_len = sizeof("bionic libc android-21");
+      break;
+
+    case _CS_GNU_LIBPTHREAD_VERSION:
+      string = "bionic libc android-21 NPTL";
+      string_len = sizeof("bionic libc android-21 NPTL");
+      break;
+    default:
+      return 0;
+  }
+
+  if (len > 0 && buf != NULL) {
+    if (string_len <= len) {
+      memcpy (buf, string, string_len);
+    } else {
+      memcpy (buf, string, len - 1);
+      buf[len - 1] = '\0';
+    }
+  }
+  return string_len;
+}
+
+const char* gnu_get_libc_version() {
+  return "0";
+}
+const char* gnu_get_libc_release() {
+  return "0";
+}
+#endif // __ANDROID__
+
 //////////////////////////////////////////////////////////////////////////////
 // detecting pthread library
 
@@ -2946,7 +2993,11 @@ extern "C" JNIEXPORT void numa_error(char *where) { }
 // Handle request to load libnuma symbol version 1.1 (API v1). If it fails
 // load symbol from base version instead.
 void* os::Linux::libnuma_dlsym(void* handle, const char *name) {
+#if !defined(__ANDROID__) || __ANDROID_API__ >= 24
   void *f = dlvsym(handle, name, "libnuma_1.1");
+#else
+  void *f = NULL;
+#endif
   if (f == NULL) {
     f = dlsym(handle, name);
   }
@@ -2956,7 +3007,11 @@ void* os::Linux::libnuma_dlsym(void* handle, const char *name) {
 // Handle request to load libnuma symbol version 1.2 (API v2) only.
 // Return NULL if the symbol is not defined in this particular version.
 void* os::Linux::libnuma_v2_dlsym(void* handle, const char* name) {
+#if !defined(__ANDROID__) || __ANDROID_API__ >= 24
   return dlvsym(handle, name, "libnuma_1.2");
+#else
+  return NULL;
+#endif
 }
 
 bool os::Linux::libnuma_init() {
@@ -3513,6 +3568,25 @@ bool os::Linux::hugetlbfs_sanity_check(bool warn, size_t page_size) {
 
   return false;
 }
+
+#ifdef __ANDROID__
+// shm not allowed by SELinux
+static inline int shmget(key_t key, size_t size, int shmflg) {
+  return -1;
+}
+
+static inline int shmctl(int shmid, int cmd, struct shmid_ds* buf) {
+  return -1;
+}
+
+static inline void *shmat(int shmid, void const* shmaddr, int shmflg) {
+  return (void*)-1;
+}
+
+static inline int shmdt(void const* shmaddr) {
+  return -1;
+}
+#endif
 
 bool os::Linux::shm_hugetlbfs_sanity_check(bool warn, size_t page_size) {
   // Try to create a large shared memory segment.
@@ -5104,7 +5178,11 @@ bool os::is_thread_cpu_time_supported() {
 // Linux doesn't yet have a (official) notion of processor sets,
 // so just return the system wide load average.
 int os::loadavg(double loadavg[], int nelem) {
+#ifndef __ANDROID__
   return ::getloadavg(loadavg, nelem);
+#else
+  return -1;
+#endif
 }
 
 void os::pause() {

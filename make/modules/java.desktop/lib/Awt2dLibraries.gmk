@@ -217,7 +217,7 @@ ifeq ($(call isTargetOs, windows macosx), false)
     LIBAWT_XAWT_LIBS := $(LIBM) -lawt -lXext -lX11 -lXrender $(LIBDL) -lXtst -lXi -ljava -ljvm
 
     ifeq ($(call isTargetOs, linux), true)
-      LIBAWT_XAWT_LIBS += -lpthread
+      LIBAWT_XAWT_LIBS += -pthread
     endif
 
     ifeq ($(TOOLCHAIN_TYPE), gcc)
@@ -534,6 +534,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBFONTMANAGER, \
     LDFLAGS_aix := -Wl$(COMMA)-berok, \
     LIBS := $(BUILD_LIBFONTMANAGER_FONTLIB), \
     LIBS_unix := -lawt -ljava -ljvm $(LIBM) $(LIBCXX), \
+    LIBS_linux := -lawt_xawt $(LIBDL), \
     LIBS_macosx := -lawt_lwawt -framework CoreText -framework CoreFoundation -framework CoreGraphics, \
     LIBS_windows := $(WIN_JAVA_LIB) advapi32.lib user32.lib gdi32.lib \
         $(WIN_AWT_LIB), \
@@ -725,7 +726,7 @@ ifeq ($(ENABLE_HEADLESS_ONLY), false)
   else ifeq ($(call isTargetOs, windows), true)
     LIBSPLASHSCREEN_LIBS += kernel32.lib user32.lib gdi32.lib delayimp.lib $(WIN_JAVA_LIB) jvm.lib
   else
-    LIBSPLASHSCREEN_LIBS += $(X_LIBS) -lX11 -lXext $(LIBM) -lpthread -ldl
+    LIBSPLASHSCREEN_LIBS += $(X_LIBS) -lX11 -lXext $(LIBM) -pthread -ldl -liconv
   endif
 
   LIBSPLASHSCREEN_HEADER_DIRS += \

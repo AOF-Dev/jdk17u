@@ -55,6 +55,24 @@
 #include "gdefs.h"
 #include <dlfcn.h>
 #include "Trace.h"
+#ifdef __ANDROID__
+// shm not allowed by SELinux
+static inline int shmget(key_t key, size_t size, int shmflg) {
+  return -1;
+}
+
+static inline int shmctl(int shmid, int cmd, struct shmid_ds* buf) {
+  return -1;
+}
+
+static inline void *shmat(int shmid, void const* shmaddr, int shmflg) {
+  return (void*)-1;
+}
+
+static inline int shmdt(void const* shmaddr) {
+  return -1;
+}
+#endif
 
 int awt_numScreens;     /* Xinerama-aware number of screens */
 

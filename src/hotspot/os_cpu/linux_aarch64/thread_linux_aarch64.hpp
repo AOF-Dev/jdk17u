@@ -47,6 +47,13 @@ private:
   bool pd_get_top_frame(frame* fr_addr, void* ucontext, bool isInJava);
 public:
 
+/* Android dose not support ELF TLS until Android-10 */
+#if !defined(__ANDROID__) || __ANDROID_API__ >= 29
   static Thread *aarch64_get_thread_helper();
+#else
+  static Thread *aarch64_get_thread_helper() {
+    return Thread::current();
+  }
+#endif
 
 #endif // OS_CPU_LINUX_AARCH64_THREAD_LINUX_AARCH64_HPP

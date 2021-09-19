@@ -1004,6 +1004,10 @@ int64_t NetworkPerformanceInterface::NetworkPerformance::read_counter(const char
   return value;
 }
 
+#if defined(__ANDROID__) && __ANDROID_API__ < 24
+#include "ifaddrs.inc.h"
+#endif
+
 int NetworkPerformanceInterface::NetworkPerformance::network_utilization(NetworkInterface** network_interfaces) const
 {
   ifaddrs* addresses;

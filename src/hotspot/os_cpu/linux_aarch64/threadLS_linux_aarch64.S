@@ -18,7 +18,7 @@
 // Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
 // or visit www.oracle.com if you need additional information or have any
 // questions.
-
+#ifndef __ANDROID__
         // JavaThread::aarch64_get_thread_helper()
         //
         // Return the current thread pointer in x0.
@@ -42,3 +42,4 @@ _ZN10JavaThread25aarch64_get_thread_helperEv:
 	ret
 
 	.size _ZN10JavaThread25aarch64_get_thread_helperEv, .-_ZN10JavaThread25aarch64_get_thread_helperEv
+#endif

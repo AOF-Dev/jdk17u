@@ -483,6 +483,15 @@ forkChild(ChildStuff *c) {
     return resultPid;
 }
 
+#if defined(__ANDROID__)
+/* Implementation of posix_spawn() on Android breaks signal handler.
+ */
+int posix_spawn(pid_t* __pid, const char* __path, const posix_spawn_file_actions_t* __actions,
+                const posix_spawnattr_t* __attr, char* const __argv[], char* const __env[]) {
+    return -1;
+}
+#endif
+
 static pid_t
 spawnChild(JNIEnv *env, jobject process, ChildStuff *c, const char *helperpath) {
     pid_t resultPid;

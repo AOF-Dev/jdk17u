@@ -121,7 +121,7 @@ AC_DEFUN_ONCE([LIB_SETUP_LIBRARIES],
 
   # Threading library
   if test "x$OPENJDK_TARGET_OS" = xlinux || test "x$OPENJDK_TARGET_OS" = xaix; then
-    BASIC_JVM_LIBS="$BASIC_JVM_LIBS -lpthread"
+    BASIC_JVM_LIBS="$BASIC_JVM_LIBS -pthread"
   fi
 
   # librt for legacy clock_gettime
@@ -130,7 +130,7 @@ AC_DEFUN_ONCE([LIB_SETUP_LIBRARIES],
     # But once our supported minimum build and runtime platform
     # has glibc 2.17, this can be removed as the functions are
     # in libc.
-    BASIC_JVM_LIBS="$BASIC_JVM_LIBS -lrt"
+    BASIC_JVM_LIBS="$BASIC_JVM_LIBS"
   fi
 
   # Atomic library

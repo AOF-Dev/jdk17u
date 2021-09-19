@@ -207,7 +207,7 @@ $(eval $(call SetupJdkLibrary, BUILD_LIBJLI, \
     LDFLAGS := $(LDFLAGS_JDKLIB) \
         $(call SET_SHARED_LIBRARY_ORIGIN), \
     LIBS_unix := $(LIBZ_LIBS), \
-    LIBS_linux := $(LIBDL) -lpthread, \
+    LIBS_linux := $(LIBDL) -pthread, \
     LIBS_aix := $(LIBDL),\
     LIBS_macosx := -framework Cocoa -framework Security -framework ApplicationServices, \
     LIBS_windows := advapi32.lib comctl32.lib user32.lib, \
